@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: whatismypod
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app: whatismypod
+    origin: ovhplatform
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: whatismypod
+      origin: ovhplatform
+  template:
+    metadata:
+      labels:
+        app: whatismypod
+        origin: ovhplatform
+    spec:
+      serviceAccountName: whatismypod
+      containers:
+        - name: whatismypod
+          image: "ovhplatform/what-is-my-pod"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+  strategy:
+    blueGreen:
+      activeService: whatismypod
+      previewService: whatismypod-preview-service
+      autoPromotionEnabled: false
+      scaleDownDelaySeconds: 20

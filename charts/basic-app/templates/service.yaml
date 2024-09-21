@@ -1,15 +1,33 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "basic-app.fullname" . }}
-  labels:
-    {{- include "basic-app.labels" . | nindent 4 }}
+  name: whatismypod
+  namespace: default
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 80
+      targetPort: 8080
       protocol: TCP
       name: http
   selector:
-    {{- include "basic-app.selectorLabels" . | nindent 4 }}
+    app: whatismypod
+    origin: ovhplatform
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whatismypod-preview-service
+  namespace: default
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: whatismypod
+    origin: ovhplatform
