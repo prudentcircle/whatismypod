@@ -24,7 +24,7 @@ spec:
       serviceAccountName: whatismypod
       containers:
         - name: whatismypod
-          image: "ovhplatform/what-is-my-pod-with-tracing:1.0.1"
+          image: "ovhplatform/what-is-my-pod-with-tracing:1.0.2"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
